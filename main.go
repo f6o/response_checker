@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"fmt"
+	"os"
 )
 
-func main () {
+func main() {
 	for _, k := range os.Args[1:] {
 		log.Println("k = " + k)
 		db, err := sql.Open("sqlite3", k)
