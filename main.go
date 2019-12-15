@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
+	"fmt"
+	"github.com/f6o/response_checker/util"
 )
 
 func main() {
@@ -27,16 +28,9 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		stmt, err := tx.Prepare("INSERT INTO FOO (ID, NAME) VALUES (?, ?)")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer stmt.Close()
+		dbutil := util.DBUtil{Tx: tx}
 		for i := 0; i < 1000; i++ {
-			_, err := stmt.Exec(i, fmt.Sprintf("%03d-tarou", i))
-			if err != nil {
-				log.Fatal(i)
-			}
+			dbutil.InsertToFoo(i, fmt.Sprintf("%03d-tarou", i))
 		}
 		tx.Commit()
 	}
