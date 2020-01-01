@@ -20,7 +20,7 @@ func main() {
 		}
 		defer db.Close()
 
-		err = util.CreateTable(db)
+		err = util.CreateRequestTable(db)
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(1)
