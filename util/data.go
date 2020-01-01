@@ -44,4 +44,5 @@ func (*Request) Insert(tx *sql.Tx) error {
 	if err2 != nil {
 		return err2
 	}
+	return nil
 }
