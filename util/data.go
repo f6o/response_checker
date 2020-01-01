@@ -34,13 +34,13 @@ func CreateRequestTable(db *sql.DB) error {
 	return nil
 }
 
-func (*Request) Insert(tx *sql.Tx) error {
+func (r *Request) Insert(tx *sql.Tx) error {
 	stmt, err := tx.Prepare("INSERT INTO REQUEST (method,url,body) VALUES (?,?,?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err2 := stmt.Exec()
+	_, err2 := stmt.Exec(r.Method, r.URL, r.Body)
 	if err2 != nil {
 		return err2
 	}
