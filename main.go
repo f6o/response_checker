@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
 	"fmt"
+	
+	"github.com/mattn/go-sqlite3"
 	"github.com/f6o/response_checker/util"
 )
 
