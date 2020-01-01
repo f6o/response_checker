@@ -2,12 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
-	"fmt"
-	
-	"github.com/mattn/go-sqlite3"
+
 	"github.com/f6o/response_checker/util"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -20,9 +20,10 @@ func main() {
 		}
 		defer db.Close()
 
-		_, err = db.Exec("CREATE TABLE IF NOT EXISTS FOO (id integer not null primary key, name text); DELETE FROM FOO;")
+		err = util.CreateTable(db)
 		if err != nil {
 			log.Fatal(err)
+			os.Exit(1)
 		}
 
 		tx, err := db.Begin()
