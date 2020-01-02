@@ -26,6 +26,11 @@ func main() {
 			log.Fatal(err)
 			os.Exit(1)
 		}
+		err = util.CreateNewResponseTable(db)
+		if err != nil {
+			log.Fatal(err)
+			os.Exit(1)
+		}
 
 		ru, _ := url.Parse("https://httpbin.org/anything")
 		r := util.Request{
@@ -53,6 +58,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(4)
+		}
+		err = resp.Insert(tx)
+		if err != nil {
+			log.Fatal(err)
+			os.Exit(5)
 		}
 		tx.Commit()
 	}

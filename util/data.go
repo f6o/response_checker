@@ -39,6 +39,20 @@ func CreateNewRequestTable(db *sql.DB) error {
 	return nil
 }
 
+func CreateNewResponseTable(db *sql.DB) error {
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS RESPONSE(
+		reqid number,
+		status number,
+		contenttype text,
+		body text,
+		restime text
+	); DELETE FROM RESPONSE;`)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *Request) Insert(tx *sql.Tx) error {
 	stmt, err := tx.Prepare("INSERT INTO REQUEST (method,body,contenttype,url) VALUES (?,?,?,?)")
 	if err != nil {
@@ -46,6 +60,19 @@ func (r *Request) Insert(tx *sql.Tx) error {
 	}
 	defer stmt.Close()
 	_, err2 := stmt.Exec(r.Method, r.Body, r.ContentType, r.URL.EscapedPath())
+	if err2 != nil {
+		return err2
+	}
+	return nil
+}
+
+func (r *Response) Insert(tx *sql.Tx) error {
+	stmt, err := tx.Prepare("INSERT INTO RESPONSE (status,body,contenttype) VALUES (?,?,?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err2 := stmt.Exec(r.Status, r.Body, r.ContentType)
 	if err2 != nil {
 		return err2
 	}
