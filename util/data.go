@@ -20,7 +20,7 @@ type Response struct {
 	Header      http.Header
 }
 
-func CreateRequestTable(db *sql.DB) error {
+func CreateNewRequestTable(db *sql.DB) error {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS REQUEST(
 		id number,
 		method text,

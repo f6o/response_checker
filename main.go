@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
@@ -20,7 +19,7 @@ func main() {
 		}
 		defer db.Close()
 
-		err = util.CreateRequestTable(db)
+		err = util.CreateNewRequestTable(db)
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(1)
@@ -29,10 +28,6 @@ func main() {
 		tx, err := db.Begin()
 		if err != nil {
 			log.Fatal(err)
-		}
-		dbutil := util.DBUtil{Tx: tx}
-		for i := 0; i < 1000; i++ {
-			dbutil.InsertToFoo(i, fmt.Sprintf("%03d-tarou", i))
 		}
 		tx.Commit()
 	}
