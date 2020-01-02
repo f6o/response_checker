@@ -26,6 +26,7 @@ func CreateNewRequestTable(db *sql.DB) error {
 		id number,
 		method text,
 		url text,
+		contenttype text,
 		body text,
 		reqtime text
 	); DELETE FROM REQUEST;`)
@@ -36,12 +37,12 @@ func CreateNewRequestTable(db *sql.DB) error {
 }
 
 func (r *Request) Insert(tx *sql.Tx) error {
-	stmt, err := tx.Prepare("INSERT INTO REQUEST (method,url,body) VALUES (?,?,?)")
+	stmt, err := tx.Prepare("INSERT INTO REQUEST (method,body,contenttype,url) VALUES (?,?,?,?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err2 := stmt.Exec(r.Method, r.URL.EscapedPath(), r.Body)
+	_, err2 := stmt.Exec(r.Method, r.Body, r.ContentType, r.URL.EscapedPath())
 	if err2 != nil {
 		return err2
 	}
