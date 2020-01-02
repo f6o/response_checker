@@ -41,7 +41,7 @@ func (r *Request) Insert(tx *sql.Tx) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err2 := stmt.Exec(r.Method, r.URL, r.Body)
+	_, err2 := stmt.Exec(r.Method, r.URL.EscapedPath(), r.Body)
 	if err2 != nil {
 		return err2
 	}

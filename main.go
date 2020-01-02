@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/f6o/response_checker/util"
@@ -25,7 +27,20 @@ func main() {
 			os.Exit(1)
 		}
 
+		ru, _ := url.Parse("http://localhost:8080")
+		r := util.Request{
+			Method:      "POST",
+			Body:        "{}",
+			ContentType: "application/json",
+			URL:         *ru,
+			Header:      make(http.Header),
+		}
+
 		tx, err := db.Begin()
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = r.Insert(tx)
 		if err != nil {
 			log.Fatal(err)
 		}
