@@ -18,6 +18,7 @@ type Response struct {
 	Body        string
 	ContentType string
 	Header      http.Header
+	Status      uint
 }
 
 func CreateNewRequestTable(db *sql.DB) error {
