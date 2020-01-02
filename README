@@ -1,0 +1,6 @@
+# response_checker
+
+This tool
+
+* does a http request and stores its response in a database (sqlite3)
+* helps us diff responses on the database
