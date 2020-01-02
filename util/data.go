@@ -2,8 +2,11 @@ package util
 
 import (
 	"database/sql"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type Request struct {
@@ -18,7 +21,7 @@ type Response struct {
 	Body        string
 	ContentType string
 	Header      http.Header
-	Status      uint
+	Status      int
 }
 
 func CreateNewRequestTable(db *sql.DB) error {
@@ -47,4 +50,42 @@ func (r *Request) Insert(tx *sql.Tx) error {
 		return err2
 	}
 	return nil
+}
+
+var EmptyResponse = Response{}
+
+func (r *Request) DoRequest() (Response, error) {
+	if r == nil {
+		return EmptyResponse, fmt.Errorf("request is nil")
+	}
+
+	var resp *http.Response
+	var err error
+
+	switch r.Method {
+	case "GET":
+		resp, err = http.Get(r.URL.String())
+	case "POST":
+		reader := strings.NewReader(r.Body)
+		resp, err = http.Post(r.URL.String(), r.ContentType, reader)
+	default:
+		err = fmt.Errorf("unexpected request method: %s", r.Method)
+		return EmptyResponse, err
+	}
+	if err != nil {
+		return EmptyResponse, err
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return EmptyResponse, err
+	}
+
+	return Response{
+		Status:      resp.StatusCode,
+		Body:        string(b),
+		ContentType: resp.Header.Get("content-type"),
+		Header:      resp.Header,
+	}, nil
 }

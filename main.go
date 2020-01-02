@@ -27,7 +27,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		ru, _ := url.Parse("http://localhost:8080")
+		ru, _ := url.Parse("https://httpbin.org/anything")
 		r := util.Request{
 			Method:      "POST",
 			Body:        "{}",
@@ -36,13 +36,23 @@ func main() {
 			Header:      make(http.Header),
 		}
 
+		resp, err := r.DoRequest()
+		if err != nil {
+			log.Fatal(err)
+			os.Exit(2)
+		}
+		log.Printf(resp.ContentType)
+		log.Printf(resp.Body)
+
 		tx, err := db.Begin()
 		if err != nil {
 			log.Fatal(err)
+			os.Exit(3)
 		}
 		err = r.Insert(tx)
 		if err != nil {
 			log.Fatal(err)
+			os.Exit(4)
 		}
 		tx.Commit()
 	}
